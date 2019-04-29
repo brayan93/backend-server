@@ -29,3 +29,43 @@ exports.verificaToken = function(req, res, next) {
     });
 
 }
+
+/**
+ * Verifica admin
+ */
+exports.verificaADMIN_ROLE = function(req, res, next) {
+
+    var usuario = req.usuario;
+
+    if (usuario.role === 'ADMIN_ROLE') {
+        next();
+        return;
+    } else {
+        return res.status(401).json({
+            ok: false,
+            mensaje: 'Token incorrecto - No es admin',
+            errors: { message: 'No es admin, no tiene permisos para continuar esta acción' }
+        });
+    }
+
+}
+/**
+ * Verifica admin o mismo usuario
+ */
+exports.verificaMismoUsuario = function(req, res, next) {
+
+    var usuario = req.usuario;
+    var id = req.params.id;
+
+    if (usuario.role === 'ADMIN_ROLE' || usuario._id === id) {
+        next();
+        return;
+    } else {
+        return res.status(401).json({
+            ok: false,
+            mensaje: 'Token incorrecto - No es admin ni es el mismo usuario',
+            errors: { message: 'No es admin, no tiene permisos para continuar esta acción' }
+        });
+    }
+
+}
